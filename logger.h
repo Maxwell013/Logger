@@ -4,6 +4,8 @@
 #include <ostream>
 #include <ctime>
 #include <mutex>
+#include <sstream>
+#include <string>
 
 enum LogType {
     Trace, Debug, Info, Warning, Error, Fatal
@@ -40,44 +42,53 @@ private:
 
     static std::mutex s_mutex;
 
-    static void printPrefix(LogType p_logtype) {
-
+    static std::string printPrefix(LogType p_logtype) {
+        std::ostringstream stream;
         // Time
         std::time_t time = std::time(nullptr);
-        char timeString[80];
-        std::strftime(timeString, 80, "[%T]", std::gmtime(&time));
-        std::cout << timeString;
+        char timeString[12];
+        std::strftime(timeString, 12, "[%T]", std::gmtime(&time));
+        stream << timeString;
 
         // Log type
-        std::cout << p_logtype;
+        stream << p_logtype;
 
         // Whitespace
-        std::cout << '\t';
+        stream << '\t';
+
+        return stream.str();
     }
 
     template<typename T>
-    static void print(const T p_arg) {
-        std::cout << p_arg << std::endl;
+    static std::string print(const T p_arg) {
+        std::ostringstream stream;
+        stream << p_arg << std::endl;
+        return stream.str();
     }
 
     template<typename T, typename... Args>
-    static void print(const T p_arg, const Args... p_args) {
-        std::cout << p_arg;
-        print(p_args...);
+    static std::string print(const T p_arg, const Args... p_args) {
+        std::ostringstream stream;
+        stream << p_arg << print(p_args...);
+        return stream.str();
     }
 
     template<typename T>
     static void print(const LogType p_logtype, const T p_arg) {
         std::lock_guard<std::mutex> lock(s_mutex);
-        printPrefix(p_logtype);
-        std::cout << p_arg << std::endl;
+        std::ostringstream stream;
+        stream << printPrefix(p_logtype);
+        stream << p_arg << std::endl;
+        std::cout << stream.str();
     }
+
     template<typename T, typename... Args>
     static void print(const LogType p_logtype, const T p_arg, const Args... p_args) {
         std::lock_guard<std::mutex> lock(s_mutex);
-        printPrefix(p_logtype);
-        std::cout << p_arg;
-        print(p_args...);
+        std::ostringstream stream;
+        stream << printPrefix(p_logtype);
+        stream << p_arg << print(p_args...);
+        std::cout << stream.str();
     }
 
 public:
