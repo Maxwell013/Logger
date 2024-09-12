@@ -1,15 +1,16 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 0.3.1 - Refactor and README update
+## Version 0.4.0 - Output streams
 - Major: Development
-- Minor: Timestamps and Refactor
-- Patch: Refactor and README update
+- Minor: Output streams
+- Patch: Output streams
 
 ## Features
 - A Logger class to store logging preferences
 - Thread safe methods for all log types (Trace, Debug, Info, Warning, Error, Fatal)
 - Timestamps and log types prefixes for logged messages
+- Customizable output streams
 - Single file header only implementation
 
 ## Usage
@@ -42,7 +43,33 @@ int main() {
 
 That's it! It's as simple as that! Feel free to use this library in your personnal projects!
 
+If you wish to keep your logs in a file rather than outputing to the console, Logger supports alternate output streams.
+Simply use the `Logger::setOutputStream()` method.
+
+Example:
+```C++
+//test.cpp
+#include "Logger.h"
+
+#include <fstream>
+#include <string>
+
+int main() {
+
+    std::string filePath = "log.txt";
+    std::ofstream ofstream(filePath);
+    Logger::setOutputStream(&ofstream);
+
+    Logger::debug("Testing alternate output streams!");
+
+    return 0;
+}
+```
+
 ## Changelog
+
+### Version 0.4.0 - Output streams
+- Added support for alternate output streams
 
 ### Version 0.3.1 - Refactor and README update
 - Added README sections (Features, Usage, Changelog)

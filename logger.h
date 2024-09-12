@@ -1,11 +1,14 @@
 #pragma once
 
+#include <fstream>
+#include <ios>
 #include <iostream>
+#include <istream>
 #include <ostream>
-#include <ctime>
-#include <mutex>
 #include <sstream>
 #include <string>
+#include <ctime>
+#include <mutex>
 
 enum LogType {
     Trace, Debug, Info, Warning, Error, Fatal
@@ -13,22 +16,22 @@ enum LogType {
 
 std::ostream& operator<<(std::ostream& p_ostream, LogType p_logtype) {
     switch (p_logtype) {
-    case LogType::Trace:
+    case Trace:
     p_ostream << "[Trace]  ";
     break;
-    case LogType::Debug:
+    case Debug:
     p_ostream << "[Debug]  ";
     break;
-    case LogType::Info:
+    case Info:
     p_ostream << "[Info]   ";
     break;
-    case LogType::Warning:
+    case Warning:
     p_ostream << "[Warning]";
     break;
-    case LogType::Error:
+    case Error:
     p_ostream << "[Error]  ";
     break;
-    case LogType::Fatal:
+    case Fatal:
     p_ostream << "[Fatal]  ";
     break;
     }
@@ -41,6 +44,7 @@ class Logger {
 private:
 
     static std::mutex s_mutex;
+    static std::ostream* s_ostream;
 
     static std::string printPrefix(LogType p_logtype) {
         std::ostringstream stream;
@@ -79,7 +83,7 @@ private:
         std::ostringstream stream;
         stream << printPrefix(p_logtype);
         stream << p_arg << std::endl;
-        std::cout << stream.str();
+        *s_ostream << stream.str();
     }
 
     template<typename T, typename... Args>
@@ -88,70 +92,79 @@ private:
         std::ostringstream stream;
         stream << printPrefix(p_logtype);
         stream << p_arg << print(p_args...);
-        std::cout << stream.str();
+        *s_ostream << stream.str();
     }
 
 public:
 
+    static void setOutputStream(std::ostream* p_ostream) {
+
+        if (s_ostream != &std::cout && dynamic_cast<std::ofstream*>(s_ostream)) {
+            static_cast<std::ofstream*>(s_ostream)->close();
+        }
+        s_ostream = p_ostream;
+    }
+
     template<typename T>
     static void trace(const T p_arg) {
-        print(LogType::Trace, p_arg);
+        print(Trace, p_arg);
     }
 
     template<typename... Args>
     static void trace(const Args... p_args) {
-        print(LogType::Trace, p_args...);
+        print(Trace, p_args...);
     }
 
     template<typename T>
     static void debug(const T p_arg) {
-        print(LogType::Debug, p_arg);
+        print(Debug, p_arg);
     }
 
     template<typename... Args>
     static void debug(const Args... p_args) {
-        print(LogType::Debug, p_args...);
+        print(Debug, p_args...);
     }
 
     template<typename T>
     static void info(const T p_arg) {
-        print(LogType::Info, p_arg);
+        print(Info, p_arg);
     }
 
     template<typename... Args>
     static void info(const Args... p_args) {
-        print(LogType::Info, p_args...);
+        print(Info, p_args...);
     }
 
     template<typename T>
     static void warning(const T p_arg) {
-        print(LogType::Warning, p_arg);
+        print(Warning, p_arg);
     }
 
     template<typename... Args>
     static void warning(const Args... p_args) {
-        print(LogType::Warning, p_args...);
+        print(Warning, p_args...);
     }
 
     template<typename T>
     static void error(const T p_arg) {
-        print(LogType::Error, p_arg);
+        print(Error, p_arg);
     }
 
     template<typename... Args>
     static void error(const Args... p_args) {
-        print(LogType::Error, p_args...);
+        print(Error, p_args...);
     }
 
     template<typename T>
     static void fatal(const T p_arg) {
-        print(LogType::Fatal, p_arg);
+        print(Fatal, p_arg);
     }
 
     template<typename... Args>
     static void fatal(const Args... p_args) {
-        print(LogType::Fatal, p_args...);
+        print(Fatal, p_args...);
     }
 };
 
 std::mutex Logger::s_mutex;
+std::ostream* Logger::s_ostream = &std::cout;
