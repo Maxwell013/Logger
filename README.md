@@ -1,16 +1,17 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 0.4.0 - Output streams
+## Version 0.5.0 - Output flags
 - Major: Development
-- Minor: Output streams
-- Patch: Output streams
+- Minor: Output flags
+- Patch: Output flags
 
 ## Features
 - A Logger class to store logging preferences
 - Thread safe methods for all log types (Trace, Debug, Info, Warning, Error, Fatal)
 - Timestamps and log types prefixes for logged messages
 - Customizable output streams
+- Customizable output prefixes using flags
 - Single file header only implementation
 
 ## Usage
@@ -66,7 +67,38 @@ int main() {
 }
 ```
 
+For output preferences, Logger supports Outputflags.
+Simply use the `Logger::setFlag()` and `Logger::clearFlag()` methods.
+
+Example:
+```C++
+// test.cpp
+#include "Logger.h"
+
+int main() {
+    // Note: by default, all flags are set to true!
+    Logger::debug("Testing different output flags!");
+    // Use the Logger::clearFlags() to set flags to false
+    Logger::clearFlag(Flag::TIMESTAMPSPREFIX);
+    Logger::debug("Testing different output flags!");
+    Logger::clearFlag(Flag::WHITESPACEPREFIX);
+    Logger::debug("Testing different output flags!");
+    // Use the Logger::setFlags() to set them to true
+    Logger::setFlag(Flag::TIMESTAMPSPREFIX);
+    Logger::debug("Testing different output flags!");
+    Logger::clearFlag(Flag::LOGTYPESPREFIX);
+    Logger::debug("Testing different output flags!");
+    // Note: multiple flags can be set/cleared like so:
+    Logger::setFlag(Flag::WHITESPACEPREFIX | Flag::LOGTYPESPREFIX);
+    Logger::debug("Testing different output flags!");
+
+    return 0;
+```
+
 ## Changelog
+
+### Version 0.5.0 - Output flags
+- Added output flags for logging preferences (Timestamps Prefix, Log Type Prefix and Whitespace Prefix)
 
 ### Version 0.4.0 - Output streams
 - Added support for alternate output streams
