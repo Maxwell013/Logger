@@ -1,10 +1,10 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 0.6.0 - Log type colors
+## Version 0.6.1 - Clear warnings
 - Major: Development
 - Minor: Log type colors
-- Patch: Log type colors
+- Patch: Clear warnings
 
 ## Features
 - A Logger class to store logging preferences
@@ -115,7 +115,10 @@ int main() {
 
 ## Changelog
 
-## Version 0.6.0 - Log type colors
+### Version 0.6.1 - Clear warnings
+- Change all possible ODR violations to proper inline methods/attributes
+
+### Version 0.6.0 - Log type colors
 - Added colors for all log types (only for console logging)
 - Added an output flag for log type colors
 - Added suffix flags (End of line)

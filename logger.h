@@ -21,17 +21,17 @@ enum class Flag {
 };
 
 
-Flag operator|(Flag p_flag1, Flag p_flag2) { return (Flag)((int)p_flag1 | (int)p_flag2); }
+inline Flag operator|(Flag p_flag1, Flag p_flag2) { return (Flag)((int)p_flag1 | (int)p_flag2); }
 
-int operator|(int p_int, Flag p_flag) { return p_int | (int)p_flag; }
+inline int operator|(int p_int, Flag p_flag) { return p_int | (int)p_flag; }
 
-int operator~(Flag p_flag) { return ~(int)p_flag; }
+inline int operator~(Flag p_flag) { return ~(int)p_flag; }
 
-int operator&(int p_int, Flag p_flag) { return p_int & (int)p_flag; }
+inline int operator&(int p_int, Flag p_flag) { return p_int & (int)p_flag; }
 
 enum LogType { Trace, Debug, Info, Warning, Error, Fatal };
 
-std::ostream& operator<<(std::ostream& p_ostream, LogType p_logtype) {
+inline std::ostream& operator<<(std::ostream& p_ostream, LogType p_logtype) {
     switch (p_logtype) {
     case Trace:
         p_ostream << "[Trace]";
@@ -226,8 +226,8 @@ public:
     static void fatal(const Args... p_args) { print(Fatal, p_args...); }
 };
 
-std::mutex Logger::s_mutex;
-std::ostream* Logger::s_ostream = &std::cout;
-int Logger::s_flags = (int) Flag::TIMESTAMPSPREFIX | Flag::LOGTYPESPREFIX | Flag::WHITESPACEPREFIX | // Prefix
-                            Flag::LOGTYPECOLORS | // Content
-                            Flag::ENDOFLINESUFFIX; // Suffix
+inline std::mutex Logger::s_mutex;
+inline std::ostream* Logger::s_ostream = &std::cout;
+inline int Logger::s_flags = (int)  Flag::TIMESTAMPSPREFIX  | Flag::LOGTYPESPREFIX | Flag::WHITESPACEPREFIX | // Prefix
+                                    Flag::LOGTYPECOLORS     |                                                 // Content
+                                    Flag::ENDOFLINESUFFIX;                                                    // Suffix
