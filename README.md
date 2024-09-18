@@ -25,7 +25,9 @@ Example:
 #include "Logger.h"
 
 int main() {
+
     // Logging with different log types
+
     Logger::trace("Testing TRACE logging!");
     Logger::debug("Testing DEBUG logging!");
     Logger::info("Testing INFO logging!");
@@ -34,9 +36,11 @@ int main() {
     Logger::fatal("Testing FATAL logging!");
 
     // Logging with multiple arguments to the methods
+
     Logger::debug("Testing ", "multiple ", "arguments!");
     Logger::debug("Testing ", 2, " different ", "argument types!");
     Logger::debug("Testing multiple different types: ", 100, ' ', 100.00, " ", 0x64, "!");
+
     // Note: if you wish to use a custom class or type make sure it has the << operator defined!
 
     return 0;
@@ -77,18 +81,26 @@ Example:
 #include "Logger.h"
 
 int main() {
+
     // Note: by default, all flags are set to true!
     Logger::debug("Testing different output flags!");
+
     // Use the Logger::clearFlags() to set flags to false
+
     Logger::clearFlag(Flag::TIMESTAMPSPREFIX);
     Logger::debug("Testing different output flags!");
+
     Logger::clearFlag(Flag::WHITESPACEPREFIX);
     Logger::debug("Testing different output flags!");
+
     // Use the Logger::setFlags() to set them to true
+
     Logger::setFlag(Flag::TIMESTAMPSPREFIX);
     Logger::debug("Testing different output flags!");
+
     Logger::clearFlag(Flag::LOGTYPESPREFIX);
     Logger::debug("Testing different output flags!");
+
     // Note: multiple flags can be set/cleared like so:
     Logger::setFlag(Flag::WHITESPACEPREFIX | Flag::LOGTYPESPREFIX);
     Logger::debug("Testing different output flags!");
@@ -118,14 +130,14 @@ int main() {
 - Added README sections (Features, Usage, Changelog)
 - Changed the method implementations for code clarity
 
-### Version 0.3 - Timestamps and Refactor
+### Version 0.3.0 - Timestamps and Refactor
 - Added timestamps to log methods
 - Changed the method implementations for code clarity
 
-### Version 0.2 - Thread safety
+### Version 0.2.0 - Thread Safety
 - Added lock_guard to all log methods for proper thread safety
 
-### Version 0.1 - Basic logging
+### Version 0.1.0 - Basic logging
 - Added Logger class
 - Added log types (Trace, Debug, Info, Warning, Error, Fatal)
 - Added static methods for all log types
