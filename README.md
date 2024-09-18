@@ -1,17 +1,18 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 0.5.0 - Output flags
+## Version 0.6.0 - Log type colors
 - Major: Development
-- Minor: Output flags
-- Patch: Output flags
+- Minor: Log type colors
+- Patch: Log type colors
 
 ## Features
 - A Logger class to store logging preferences
 - Thread safe methods for all log types (Trace, Debug, Info, Warning, Error, Fatal)
+- Colors for every log type
 - Timestamps and log types prefixes for logged messages
 - Customizable output streams
-- Customizable output prefixes using flags
+- Customizable output prefixes/suffixes using flags
 - Single file header only implementation
 
 ## Usage
@@ -92,10 +93,20 @@ int main() {
     Logger::setFlag(Flag::WHITESPACEPREFIX | Flag::LOGTYPESPREFIX);
     Logger::debug("Testing different output flags!");
 
+    // Note: additional flags inculde:
+    // - Flag::LOGTYPECOLORS
+    // - Flag::ENDOFLINESUFFIX
+
     return 0;
+}
 ```
 
 ## Changelog
+
+## Version 0.6.0 - Log type colors
+- Added colors for all log types (only for console logging)
+- Added an output flag for log type colors
+- Added suffix flags (End of line)
 
 ### Version 0.5.0 - Output flags
 - Added output flags for logging preferences (Timestamps Prefix, Log Type Prefix and Whitespace Prefix)
@@ -111,7 +122,7 @@ int main() {
 - Added timestamps to log methods
 - Changed the method implementations for code clarity
 
-### Version 0.2 - Thread Safety
+### Version 0.2 - Thread safety
 - Added lock_guard to all log methods for proper thread safety
 
 ### Version 0.1 - Basic logging

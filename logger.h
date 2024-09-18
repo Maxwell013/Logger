@@ -15,7 +15,9 @@
 enum class Flag {
     TIMESTAMPSPREFIX = FLAG(0),
     LOGTYPESPREFIX = FLAG(1),
-    WHITESPACEPREFIX = FLAG(2)
+    WHITESPACEPREFIX = FLAG(2),
+    LOGTYPECOLORS = FLAG(3),
+    ENDOFLINESUFFIX = FLAG(4),
 };
 
 
@@ -32,23 +34,23 @@ enum LogType { Trace, Debug, Info, Warning, Error, Fatal };
 std::ostream& operator<<(std::ostream& p_ostream, LogType p_logtype) {
     switch (p_logtype) {
     case Trace:
-    p_ostream << "[Trace]";
-    break;
+        p_ostream << "[Trace]";
+        break;
     case Debug:
-    p_ostream << "[Debug]";
-    break;
+        p_ostream << "[Debug]";
+        break;
     case Info:
-    p_ostream << "[Info]";
-    break;
+        p_ostream << "[Info]";
+        break;
     case Warning:
-    p_ostream << "[Warning]";
-    break;
+        p_ostream << "[Warning]";
+        break;
     case Error:
-    p_ostream << "[Error]";
-    break;
+        p_ostream << "[Error]";
+        break;
     case Fatal:
-    p_ostream << "[Fatal]";
-    break;
+        p_ostream << "[Fatal]";
+        break;
     }
 
     return p_ostream;
@@ -68,6 +70,11 @@ private:
 
     static std::string printPrefix(LogType p_logtype) {
         std::ostringstream stream;
+
+        // Color
+        if (hasFlag(Flag::LOGTYPECOLORS) && s_ostream == &std::cout) {
+            stream << printLogTypeColor(p_logtype);
+        }
 
         // Time
         if (hasFlag(Flag::TIMESTAMPSPREFIX)) {
@@ -90,10 +97,27 @@ private:
         return stream.str();
     }
 
+    static std::string printSuffix() {
+        std::ostringstream stream;
+
+        // Color
+        if (hasFlag(Flag::LOGTYPECOLORS) && s_ostream == &std::cout) {
+            stream << endLogTypeColor();
+        }
+
+        // End of line
+        if (hasFlag(Flag::ENDOFLINESUFFIX)) {
+            stream << std::endl;
+        }
+
+        return stream.str();
+    }
+
     template<typename T>
     static std::string print(const T p_arg) {
         std::ostringstream stream;
-        stream << p_arg << std::endl;
+        stream << p_arg;
+        stream << printSuffix();
         return stream.str();
     }
 
@@ -109,7 +133,8 @@ private:
         std::lock_guard<std::mutex> lock(s_mutex);
         std::ostringstream stream;
         stream << printPrefix(p_logtype);
-        stream << p_arg << std::endl;
+        stream << p_arg;
+        stream << printSuffix();
         *s_ostream << stream.str();
     }
 
@@ -121,6 +146,34 @@ private:
         stream << p_arg << print(p_args...);
         *s_ostream << stream.str();
     }
+
+    static std::string printLogTypeColor(LogType p_logtype) {
+        std::string colorCode;
+        switch (p_logtype) {
+        case Trace:
+            colorCode = "\033[0m";
+            break;
+        case Debug:
+            colorCode = "\033[32m";
+            break;
+        case Info:
+            colorCode = "\033[34m";
+            break;
+        case Warning:
+            colorCode = "\033[33m";
+            break;
+        case Error:
+            colorCode = "\033[31m";
+            break;
+        case Fatal:
+            colorCode = "\033[37;41m";
+            break;
+        }
+
+        return colorCode;
+    }
+
+    static std::string endLogTypeColor() { return "\033[0m"; }
 
 public:
 
@@ -175,4 +228,6 @@ public:
 
 std::mutex Logger::s_mutex;
 std::ostream* Logger::s_ostream = &std::cout;
-int Logger::s_flags = (int) Flag::TIMESTAMPSPREFIX | Flag::LOGTYPESPREFIX | Flag::WHITESPACEPREFIX;
+int Logger::s_flags = (int) Flag::TIMESTAMPSPREFIX | Flag::LOGTYPESPREFIX | Flag::WHITESPACEPREFIX | // Prefix
+                            Flag::LOGTYPECOLORS | // Content
+                            Flag::ENDOFLINESUFFIX; // Suffix
