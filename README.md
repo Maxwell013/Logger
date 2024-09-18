@@ -134,7 +134,7 @@ int main() {
 - Added timestamps to log methods
 - Changed the method implementations for code clarity
 
-### Version 0.2.0 - Thread Safety
+### Version 0.2.0 - Thread safety
 - Added lock_guard to all log methods for proper thread safety
 
 ### Version 0.1.0 - Basic logging
