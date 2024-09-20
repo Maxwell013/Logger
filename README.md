@@ -1,15 +1,17 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 0.6.1 - Clear warnings
+## Version 0.7.0 - Log tags and Filtering
 - Major: Development
-- Minor: Log type colors
-- Patch: Clear warnings
+- Minor: Log tags and Filtering
+- Patch: Log tags and Filtering
 
 ## Features
 - A Logger class to store logging preferences
 - Thread safe methods for all log types (Trace, Debug, Info, Warning, Error, Fatal)
 - Colors for every log type
+- Log tags for additonal specifications
+- Highly customizable filtering for both log types and log tags
 - Timestamps and log types prefixes for logged messages
 - Customizable output streams
 - Customizable output prefixes/suffixes using flags
@@ -72,7 +74,7 @@ int main() {
 }
 ```
 
-For output preferences, Logger supports Outputflags.
+For output preferences, Logger uses flags.
 Simply use the `Logger::setFlag()` and `Logger::clearFlag()` methods.
 
 Example:
@@ -82,7 +84,7 @@ Example:
 
 int main() {
 
-    // Note: by default, all flags are set to true!
+    // Note: by default, most flags are set to true! (See flag defaults below)
     Logger::debug("Testing different output flags!");
 
     // Use the Logger::clearFlags() to set flags to false
@@ -105,18 +107,53 @@ int main() {
     Logger::setFlag(Flag::WHITESPACEPREFIX | Flag::LOGTYPESPREFIX);
     Logger::debug("Testing different output flags!");
 
-    // Note: additional flags inculde:
-    // - Flag::LOGTYPECOLORS
-    // - Flag::ENDOFLINESUFFIX
-
     return 0;
 }
 ```
 
+If you wish to specify further your logging, use the built in log tags!
+
+Example:
+
+```C++
+//test.cpp
+#include "Logger.h"
+
+int main() {
+
+    // Set the log tag prefix flag
+    Logger::setFlag(Flag::LOGTAGPREFIX);
+
+    LogTag testingTag("Testing"); // Create a log tag
+    Logger::debug(testingTag, "Testing tag specification!");
+
+    // Note: using multiple log tags or not specifying the log tag as the first argument will yeild unwanted behaviour
+
+    return 0;
+```
+
+### Additional information about flags (NAME, default value, behaviour)
+- `TIMESTAMPSPREFIX`,  `true`,  Toggles the display of the timestamp
+- `LOGTYPESPREFIX`,    `true`,  Toggles the display of the log type
+- `WHITESPACEPREFIX`,  `true`,  Toggles the display of whitespace between the prefix and the message
+- `LOGTAGPREFIX`,      `false`, Toggles the display of the log tag
+- `LOGTYPECOLORS`,     `true`,  Toggles the color of the message based on log type
+- `LOGTYPEFILTER`,     `false`, Toggles the filtering of the message based on log type
+- `LOGTAGFILTER`,      `false`, Toggles the filtering of the message based on log tag
+- `WHITELISTFILTER`,   `true`,  Toggles the use of whitelisting for filtering (filters act as blacklists if this flag is cleared)
+- `ENDOFLINESUFFIX`,   `true`,  Toggles the display of a end of line following the message
+
 ## Changelog
 
+### Version 0.7.0 - Log tags and Filtering
+- Added log tags for additional specification
+- Added filtering using both tags and types
+- Added flags for tags and filtering
+- Changed attribute declaration for code clarity
+- Changed the method implementations for code clarity
+
 ### Version 0.6.1 - Clear warnings
-- Change all possible ODR violations to proper inline methods/attributes
+- Changed all possible ODR violations to proper inline methods/attributes
 
 ### Version 0.6.0 - Log type colors
 - Added colors for all log types (only for console logging)
