@@ -1,25 +1,24 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 0.7.0 - Log tags and Filtering
-- Major: Development
-- Minor: Log tags and Filtering
-- Patch: Log tags and Filtering
+## Version 1.0.0 - Full release
+- Major: Full release
+- Minor: Full release
+- Patch: Full release
 
 ## Features
-- A Logger class to store logging preferences
-- Thread safe methods for all log types (Trace, Debug, Info, Warning, Error, Fatal)
-- Colors for every log type
-- Log tags for additonal specifications
-- Highly customizable filtering for both log types and log tags
+- Six different log types with (Trace, Debug, Info, Warning, Error, Fatal)
+- Easy to use macros for convenience
+- Thread safe methods
 - Timestamps and log types prefixes for logged messages
-- Customizable output streams
-- Customizable output prefixes/suffixes using flags
+- Tags and flags for customizing the output
+- Highly customizable filtering for both log types and tags
+- Support for different output streams
 - Single file header only implementation
 
 ## Usage
-To get started with Logger, copy the Logger.h file from the repository and add it to your project.
-Include the `"Logger.h"` header files to your cpp files and use any of the logging methods from the example bellow!
+To get started with Logger, copy the `Logger.h` file from the repository and add it to your project.
+Include the header files to your cpp files and use any of the logging methods from the example bellow!
 
 Example:
 ```C++
@@ -30,18 +29,18 @@ int main() {
 
     // Logging with different log types
 
-    Logger::trace("Testing TRACE logging!");
-    Logger::debug("Testing DEBUG logging!");
-    Logger::info("Testing INFO logging!");
-    Logger::warning("Testing WARNING logging!");
-    Logger::error("Testing ERROR logging!");
-    Logger::fatal("Testing FATAL logging!");
+    LOGGER_TRACE("Testing TRACE logging!");
+    LOGGER_DEBUG("Testing DEBUG logging!");
+    LOGGER_INFO("Testing INFO logging!");
+    LOGGER_WARNING("Testing WARNING logging!");
+    LOGGER_ERROR("Testing ERROR logging!");
+    LOGGER_FATAL("Testing FATAL logging!");
 
     // Logging with multiple arguments to the methods
 
-    Logger::debug("Testing ", "multiple ", "arguments!");
-    Logger::debug("Testing ", 2, " different ", "argument types!");
-    Logger::debug("Testing multiple different types: ", 100, ' ', 100.00, " ", 0x64, "!");
+    LOGGER_DEBUG("Testing ", "multiple ", "arguments!");
+    LOGGER_DEBUG("Testing ", 2, " different ", "argument types!");
+    LOGGER_DEBUG("Testing multiple different types: ", 100, ' ', 100.00, " ", 0x64, '!');
 
     // Note: if you wish to use a custom class or type make sure it has the << operator defined!
 
@@ -52,7 +51,7 @@ int main() {
 That's it! It's as simple as that! Feel free to use this library in your personnal projects!
 
 If you wish to keep your logs in a file rather than outputing to the console, Logger supports alternate output streams.
-Simply use the `Logger::setOutputStream()` method.
+Simply use the `LOGGER_SETOUTPUTSTREAM()` macro.
 
 Example:
 ```C++
@@ -66,16 +65,16 @@ int main() {
 
     std::string filePath = "log.txt";
     std::ofstream ofstream(filePath);
-    Logger::setOutputStream(&ofstream);
+    LOGGER_SETOUTPUTSTREAM(&ofstream);
 
-    Logger::debug("Testing alternate output streams!");
+    LOGGER_DEBUG("Testing alternate output streams!");
 
     return 0;
 }
 ```
 
 For output preferences, Logger uses flags.
-Simply use the `Logger::setFlag()` and `Logger::clearFlag()` methods.
+Simply use the `LOGGER_SETFLAG()` and `LOGGER_CLEARFLAG()` macros.
 
 Example:
 ```C++
@@ -85,27 +84,27 @@ Example:
 int main() {
 
     // Note: by default, most flags are set to true! (See flag defaults below)
-    Logger::debug("Testing different output flags!");
+    LOGGER_DEBUG("Testing different output flags!");
 
-    // Use the Logger::clearFlags() to set flags to false
+    // Use LOGGER_CLEARFLAG() to set flags to false
 
-    Logger::clearFlag(Flag::TIMESTAMPSPREFIX);
-    Logger::debug("Testing different output flags!");
+    LOGGER_CLEARFLAG(Logger::Flag::TIMESTAMPSPREFIX);
+    LOGGER_DEBUG("Testing different output flags!");
 
-    Logger::clearFlag(Flag::WHITESPACEPREFIX);
-    Logger::debug("Testing different output flags!");
+    LOGGER_CLEARFLAG(Logger::Flag::WHITESPACEPREFIX);
+    LOGGER_DEBUG("Testing different output flags!");
 
-    // Use the Logger::setFlags() to set them to true
+    // Use LOGGER_SETFLAGS() to set them to true
 
-    Logger::setFlag(Flag::TIMESTAMPSPREFIX);
-    Logger::debug("Testing different output flags!");
+    LOGGER_SETFLAG(Logger::Flag::TIMESTAMPSPREFIX);
+    LOGGER_DEBUG("Testing different output flags!");
 
-    Logger::clearFlag(Flag::LOGTYPESPREFIX);
-    Logger::debug("Testing different output flags!");
+    LOGGER_CLEARFLAG(Logger::Flag::LOGTYPESPREFIX);
+    LOGGER_DEBUG("Testing different output flags!");
 
-    // Note: multiple flags can be set/cleared like so:
-    Logger::setFlag(Flag::WHITESPACEPREFIX | Flag::LOGTYPESPREFIX);
-    Logger::debug("Testing different output flags!");
+    LOGGER_SETFLAG(Logger::Flag::WHITESPACEPREFIX);
+    LOGGER_SETFLAG(Logger::Flag::LOGTYPESPREFIX);
+    LOGGER_DEBUG("Testing different output flags!");
 
     return 0;
 }
@@ -122,12 +121,14 @@ Example:
 int main() {
 
     // Set the log tag prefix flag
-    Logger::setFlag(Flag::LOGTAGPREFIX);
+    LOGGER_SETFLAG(Logger::Flag::LOGTAGPREFIX);
 
-    LogTag testingTag("Testing"); // Create a log tag
-    Logger::debug(testingTag, "Testing tag specification!");
+    Logger::LogTag testingTag("Testing"); // Create a log tag
+    LOGGER_DEBUG(testingTag, "Testing tag specification!");
 
-    // Note: using multiple log tags or not specifying the log tag as the first argument will yeild unwanted behaviour
+    // Note: using multiple log tags
+    // or not specifying the log tag as the first argument
+    // will cause unwanted behaviour when filtering!
 
     return 0;
 ```
@@ -144,6 +145,11 @@ int main() {
 - `ENDOFLINESUFFIX`,   `true`,  Toggles the display of a end of line following the message
 
 ## Changelog
+
+### Version 1.0.0 - Full release
+- Added macros for all class methods
+- Added a namespace to the project as to avoid pollution
+- Changed method implementations to reduce file size and project complexity
 
 ### Version 0.7.0 - Log tags and Filtering
 - Added log tags for additional specification
