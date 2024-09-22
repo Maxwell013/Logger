@@ -17,7 +17,7 @@ A lightweight logging library for C++
 - Single file header only implementation
 
 ## Requirements
-This library built using modern C++ (C++17) features and was solely tested on a macos environment using Clang++ 16.0.0.
+This library was built using modern C++ (C++17) features and was solely tested on a macos environment using Clang++ 16.0.0, meaning using different tools may not work as intended.
 
 ## Usage
 To get started with Logger, copy the `Logger.hpp` file from the repository and add it to your project.
