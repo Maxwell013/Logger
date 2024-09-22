@@ -268,4 +268,4 @@ namespace Logger {
     };
 
     inline LogTag LogTag::s_noTag = LogTag("NONE");
-}
+} // namespace Logger

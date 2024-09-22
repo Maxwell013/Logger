@@ -1,10 +1,10 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 1.0.0 - Full release
+## Version 1.0.1 - File extension and README update
 - Major: Full release
 - Minor: Full release
-- Patch: Full release
+- Patch: File extension and README update
 
 ## Features
 - Six different log types with (Trace, Debug, Info, Warning, Error, Fatal)
@@ -16,14 +16,17 @@ A lightweight logging library for C++
 - Support for different output streams
 - Single file header only implementation
 
+## Requirements
+This library built using modern C++ (C++17) features and was solely tested on a macos environment using Clang++ 16.0.0.
+
 ## Usage
-To get started with Logger, copy the `Logger.h` file from the repository and add it to your project.
+To get started with Logger, copy the `Logger.hpp` file from the repository and add it to your project.
 Include the header files to your cpp files and use any of the logging methods from the example bellow!
 
 Example:
 ```C++
 //test.cpp
-#include "Logger.h"
+#include "Logger.hpp"
 
 int main() {
 
@@ -56,7 +59,7 @@ Simply use the `LOGGER_SETOUTPUTSTREAM()` macro.
 Example:
 ```C++
 //test.cpp
-#include "Logger.h"
+#include "Logger.hpp"
 
 #include <fstream>
 #include <string>
@@ -79,7 +82,7 @@ Simply use the `LOGGER_SETFLAG()` and `LOGGER_CLEARFLAG()` macros.
 Example:
 ```C++
 // test.cpp
-#include "Logger.h"
+#include "Logger.hpp"
 
 int main() {
 
@@ -116,7 +119,7 @@ Example:
 
 ```C++
 //test.cpp
-#include "Logger.h"
+#include "Logger.hpp"
 
 int main() {
 
@@ -145,6 +148,10 @@ int main() {
 - `ENDOFLINESUFFIX`,   `true`,  Toggles the display of a end of line following the message
 
 ## Changelog
+
+### Version 1.0.1 - File extension and README update
+- Added README section (Requirements)
+- Changed the file extension by convention
 
 ### Version 1.0.0 - Full release
 - Added macros for all class methods
