@@ -4,7 +4,7 @@ A lightweight logging library for C++
 This library is part of a long term project that aims to build a small game engine and break it down into various smaller projects.
 This is the first library and may be revisited when additional features are needed.
 
-## Version 1.1.1 - Namespace convention
+## Version 1.1.2 - Namespace convention
 - Major: Full release
 - Minor: Refactor and Cleanup
 - Patch: Namespace convention
