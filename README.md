@@ -4,10 +4,10 @@ A lightweight logging library for C++
 This library is part of a long term project that aims to build a small game engine and break it down into various smaller projects.
 This is the first library and may be revisited when additional features are needed.
 
-## Version 1.1.0 - Refactor and Cleanup
+## Version 1.1.1 - Safe timestamps
 - Major: Full release
 - Minor: Refactor and Cleanup
-- Patch: Refactor and Cleanup
+- Patch: Safe timestamps
 
 ## Features
 - Single file header only implementation
@@ -150,6 +150,9 @@ int main() {
 - `END_OF_LINE_SUFFIX`,   `true`,  Toggles the display of a end of line following the message
 
 ## Changelog
+
+### Version 1.1.1 - Safe timestamps
+- Changed the timestamp implementation to avoid unsafe functions
 
 ### Version 1.1.0 - Refactor and Cleanup
 - Changed naming conventions for consistency

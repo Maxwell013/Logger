@@ -1,5 +1,6 @@
 #pragma once
 
+#include <ctime>
 #include <fstream>
 #include <iostream>
 #include <sstream>
@@ -111,12 +112,8 @@ namespace Logger {
             if (isFlagSet(Flag::LOGTYPE_COLORS) && s_ostream == &std::cout)
                 stream << formatLogTypeColor(p_logType);
 
-            if (isFlagSet(Flag::TIMESTAMPS_PREFIX)) {
-                std::time_t time = std::time(nullptr);
-                char timeString[12];
-                std::strftime(timeString, 12, "[%T]", std::gmtime(&time));
-                stream << timeString;
-            }
+            if (isFlagSet(Flag::TIMESTAMPS_PREFIX))
+                stream << formatTimestamp();
 
             if (isFlagSet(Flag::LOGTYPES_PREFIX))
                 stream << p_logType;
@@ -204,6 +201,19 @@ namespace Logger {
             }
 
             return colorCode;
+        }
+
+        static std::string formatTimestamp() {
+            const std::time_t time = std::time(nullptr);
+            char buffer[12];
+            std::tm bt {};
+
+            #if defined (_WIN32) || defined (WIN32)
+                localtime_s(&bt, &time);
+            #else
+                localtime_r(&time, &bt);
+            #endif
+            return std::string(buffer, std::strftime(buffer, sizeof(buffer), "[%T]", &bt));
         }
 
     public:
