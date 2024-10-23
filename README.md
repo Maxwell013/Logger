@@ -4,10 +4,10 @@ A lightweight logging library for C++
 This library is part of a long term project that aims to build a small game engine and break it down into various smaller projects.
 This is the first library and may be revisited when additional features are needed.
 
-## Version 1.1.1 - Safe timestamps
+## Version 1.1.1 - Namespace convention
 - Major: Full release
 - Minor: Refactor and Cleanup
-- Patch: Safe timestamps
+- Patch: Namespace convention
 
 ## Features
 - Single file header only implementation
@@ -93,22 +93,22 @@ int main() {
 
     // Use LOGGER_CLEAR_FLAG() to set flags to false
 
-    LOGGER_CLEAR_FLAG(Logger::Flag::TIMESTAMPS_PREFIX);
+    LOGGER_CLEAR_FLAG(logger::Flag::TIMESTAMPS_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    LOGGER_CLEAR_FLAG(Logger::Flag::WHITESPACE_PREFIX);
+    LOGGER_CLEAR_FLAG(logger::Flag::WHITESPACE_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
     // Use LOGGER_SET_FLAGS() to set them to true
 
-    LOGGER_SET_FLAG(Logger::Flag::TIMESTAMPS_PREFIX);
+    LOGGER_SET_FLAG(logger::Flag::TIMESTAMPS_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    LOGGER_CLEAR_FLAG(Logger::Flag::LOGTYPES_PREFIX);
+    LOGGER_CLEAR_FLAG(logger::Flag::LOGTYPES_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    LOGGER_SET_FLAG(Logger::Flag::WHITESPACE_PREFIX);
-    LOGGER_SET_FLAG(Logger::Flag::LOGTYPES_PREFIX);
+    LOGGER_SET_FLAG(logger::Flag::WHITESPACE_PREFIX);
+    LOGGER_SET_FLAG(logger::Flag::LOGTYPES_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
     return 0;
@@ -126,9 +126,9 @@ Example:
 int main() {
 
     // Set the log tag prefix flag
-    LOGGER_SET_FLAG(Logger::Flag::LOGTAG_PREFIX);
+    LOGGER_SET_FLAG(logger::Flag::LOGTAG_PREFIX);
 
-    Logger::LogTag testingTag("Testing"); // Create a log tag
+    logger::LogTag testingTag("Testing"); // Create a log tag
     LOGGER_DEBUG(testingTag, "Testing tag specification!");
 
     // Note: using multiple log tags
@@ -150,6 +150,9 @@ int main() {
 - `END_OF_LINE_SUFFIX`,   `true`,  Toggles the display of a end of line following the message
 
 ## Changelog
+
+### Version 1.1.2 - Namespace convention
+- Changed the namespace naming convention to lowercase for consistency
 
 ### Version 1.1.1 - Safe timestamps
 - Changed the timestamp implementation to avoid unsafe functions

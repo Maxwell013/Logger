@@ -5,20 +5,20 @@
 #include <iostream>
 #include <sstream>
 
-#define LOGGER_TRACE(...) Logger::Logger::log(Logger::LogType::Trace, __VA_ARGS__)
-#define LOGGER_DEBUG(...) Logger::Logger::log(Logger::LogType::Debug, __VA_ARGS__)
-#define LOGGER_INFO(...) Logger::Logger::log(Logger::LogType::Info, __VA_ARGS__)
-#define LOGGER_WARNING(...) Logger::Logger::log(Logger::LogType::Warning, __VA_ARGS__)
-#define LOGGER_ERROR(...) Logger::Logger::log(Logger::LogType::Error, __VA_ARGS__)
-#define LOGGER_FATAL(...) Logger::Logger::log(Logger::LogType::Fatal, __VA_ARGS__)
+#define LOGGER_TRACE(...) logger::Logger::log(logger::LogType::Trace, __VA_ARGS__)
+#define LOGGER_DEBUG(...) logger::Logger::log(logger::LogType::Debug, __VA_ARGS__)
+#define LOGGER_INFO(...) logger::Logger::log(logger::LogType::Info, __VA_ARGS__)
+#define LOGGER_WARNING(...) logger::Logger::log(logger::LogType::Warning, __VA_ARGS__)
+#define LOGGER_ERROR(...) logger::Logger::log(logger::LogType::Error, __VA_ARGS__)
+#define LOGGER_FATAL(...) logger::Logger::log(logger::LogType::Fatal, __VA_ARGS__)
 
-#define LOGGER_SET_OUTPUT_STREAM(...) Logger::Logger::setOutputStream(__VA_ARGS__)
-#define LOGGER_SET_FLAG(...) Logger::Logger::setFlag(__VA_ARGS__)
-#define LOGGER_CLEAR_FLAG(...) Logger::Logger::clearFlag(__VA_ARGS__)
-#define LOGGER_SET_FILTER(...) Logger::Logger::setFilter(__VA_ARGS__)
-#define LOGGER_CLEAR_FILTER(...) Logger::Logger::clearFilter(__VA_ARGS__)
+#define LOGGER_SET_OUTPUT_STREAM(...) logger::Logger::setOutputStream(__VA_ARGS__)
+#define LOGGER_SET_FLAG(...) logger::Logger::setFlag(__VA_ARGS__)
+#define LOGGER_CLEAR_FLAG(...) logger::Logger::clearFlag(__VA_ARGS__)
+#define LOGGER_SET_FILTER(...) logger::Logger::setFilter(__VA_ARGS__)
+#define LOGGER_CLEAR_FILTER(...) logger::Logger::clearFilter(__VA_ARGS__)
 
-namespace Logger {
+namespace logger {
 
     enum class Flag {
         TIMESTAMPS_PREFIX   = 1 << 0,
@@ -266,4 +266,4 @@ namespace Logger {
     };
 
     inline LogTag LogTag::s_noTag = LogTag("NONE");
-} // namespace Logger
+} // namespace logger
