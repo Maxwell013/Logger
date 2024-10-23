@@ -4,39 +4,40 @@
 #include <iostream>
 #include <sstream>
 
-#define LOGGER_TRACE(...) Logger::Logger::print(Logger::LogType::Trace, __VA_ARGS__)
-#define LOGGER_DEBUG(...) Logger::Logger::print(Logger::LogType::Debug, __VA_ARGS__)
-#define LOGGER_INFO(...) Logger::Logger::print(Logger::LogType::Info, __VA_ARGS__)
-#define LOGGER_WARNING(...) Logger::Logger::print(Logger::LogType::Warning, __VA_ARGS__)
-#define LOGGER_ERROR(...) Logger::Logger::print(Logger::LogType::Error, __VA_ARGS__)
-#define LOGGER_FATAL(...) Logger::Logger::print(Logger::LogType::Fatal, __VA_ARGS__)
+#define LOGGER_TRACE(...) Logger::Logger::log(Logger::LogType::Trace, __VA_ARGS__)
+#define LOGGER_DEBUG(...) Logger::Logger::log(Logger::LogType::Debug, __VA_ARGS__)
+#define LOGGER_INFO(...) Logger::Logger::log(Logger::LogType::Info, __VA_ARGS__)
+#define LOGGER_WARNING(...) Logger::Logger::log(Logger::LogType::Warning, __VA_ARGS__)
+#define LOGGER_ERROR(...) Logger::Logger::log(Logger::LogType::Error, __VA_ARGS__)
+#define LOGGER_FATAL(...) Logger::Logger::log(Logger::LogType::Fatal, __VA_ARGS__)
 
-#define LOGGER_SETOUTPUTSTREAM(...) Logger::Logger::setOutputStream(__VA_ARGS__)
-#define LOGGER_SETFLAG(...) Logger::Logger::setFlag(__VA_ARGS__)
-#define LOGGER_CLEARFLAG(...) Logger::Logger::clearFlag(__VA_ARGS__)
-#define LOGGER_SETFILTER(...) Logger::Logger::setFilter(__VA_ARGS__)
-#define LOGGER_CLEARFILTER(...) Logger::Logger::clearFilter(__VA_ARGS__)
+#define LOGGER_SET_OUTPUT_STREAM(...) Logger::Logger::setOutputStream(__VA_ARGS__)
+#define LOGGER_SET_FLAG(...) Logger::Logger::setFlag(__VA_ARGS__)
+#define LOGGER_CLEAR_FLAG(...) Logger::Logger::clearFlag(__VA_ARGS__)
+#define LOGGER_SET_FILTER(...) Logger::Logger::setFilter(__VA_ARGS__)
+#define LOGGER_CLEAR_FILTER(...) Logger::Logger::clearFilter(__VA_ARGS__)
 
 namespace Logger {
 
     enum class Flag {
-        TIMESTAMPSPREFIX    = 1 << 0,
-        LOGTYPESPREFIX      = 1 << 1,
-        WHITESPACEPREFIX    = 1 << 2,
-        LOGTAGPREFIX        = 1 << 3,
-        LOGTYPECOLORS       = 1 << 4,
-        LOGTYPEFILTER       = 1 << 5,
-        LOGTAGFILTER        = 1 << 6,
-        WHITELISTFILTER     = 1 << 7,
-        ENDOFLINESUFFIX     = 1 << 8,
+        TIMESTAMPS_PREFIX   = 1 << 0,
+        LOGTYPES_PREFIX     = 1 << 1,
+        WHITESPACE_PREFIX   = 1 << 2,
+        LOGTAG_PREFIX       = 1 << 3,
+        LOGTYPE_COLORS      = 1 << 4,
+        LOGTYPE_FILTER      = 1 << 5,
+        LOGTAG_FILTER       = 1 << 6,
+        WHITELIST_FILTER    = 1 << 7,
+        END_OF_LINE_SUFFIX  = 1 << 8,
     };
 
-    inline const int DEFAULTFLAGS = (int)Flag::TIMESTAMPSPREFIX |
-                                    (int)Flag::LOGTYPESPREFIX |
-                                    (int)Flag::WHITESPACEPREFIX |
-                                    (int)Flag::LOGTYPECOLORS |
-                                    (int)Flag::WHITELISTFILTER |
-                                    (int)Flag::ENDOFLINESUFFIX;
+    inline const int DEFAULT_FLAGS =
+        (int)Flag::TIMESTAMPS_PREFIX    |
+        (int)Flag::LOGTYPES_PREFIX      |
+        (int)Flag::WHITESPACE_PREFIX    |
+        (int)Flag::LOGTYPE_COLORS       |
+        (int)Flag::WHITELIST_FILTER     |
+        (int)Flag::END_OF_LINE_SUFFIX;
 
     enum class LogType { Trace, Debug, Info, Warning, Error, Fatal, LogTypeCount};
 
@@ -71,19 +72,19 @@ namespace Logger {
     class LogTag {
 
     private:
-        std::string m_name;
-        unsigned char m_id;
+        const std::string m_name;
+        const unsigned char m_id;
 
         inline static unsigned char s_nextId = 0;
         static LogTag s_noTag;
 
     public:
 
-        LogTag(std::string p_name) : m_name(p_name), m_id(s_nextId++) { if (s_nextId == 0) { s_nextId++; } }
+        LogTag(std::string p_name) : m_name(p_name), m_id(s_nextId++) { if (s_nextId == 0) s_nextId++; }
 
-        std::string getName() { return m_name; }
+        std::string getName() const { return m_name; }
 
-        unsigned char getId() { return m_id; }
+        unsigned char getId() const { return m_id; }
 
         static LogTag getNoTag() { return s_noTag; }
     };
@@ -98,96 +99,85 @@ namespace Logger {
     private:
 
         inline static std::ostream* s_ostream = &std::cout;
-        inline static int s_flags = DEFAULTFLAGS;
+        inline static int s_flags = DEFAULT_FLAGS;
         inline static bool s_logTypeFilter[(int)LogType::LogTypeCount] = { false };
         inline static bool s_logTagFilter[UCHAR_MAX+1] = { false };
 
         static bool isFlagSet(Flag p_flag) { return (0 != ((int)s_flags & (int)p_flag)); }
 
-        static std::string printPrefix(LogType p_logType, LogTag p_logTag) {
+        static std::string formatPrefix(LogType p_logType, LogTag p_logTag) {
             std::ostringstream stream;
 
-            // Color
-            if (isFlagSet(Flag::LOGTYPECOLORS) && s_ostream == &std::cout) {
-                stream << printLogTypeColor(p_logType);
-            }
+            if (isFlagSet(Flag::LOGTYPE_COLORS) && s_ostream == &std::cout)
+                stream << formatLogTypeColor(p_logType);
 
-            // Time
-            if (isFlagSet(Flag::TIMESTAMPSPREFIX)) {
+            if (isFlagSet(Flag::TIMESTAMPS_PREFIX)) {
                 std::time_t time = std::time(nullptr);
                 char timeString[12];
                 std::strftime(timeString, 12, "[%T]", std::gmtime(&time));
                 stream << timeString;
             }
 
-            // Log type
-            if (isFlagSet(Flag::LOGTYPESPREFIX)) {
+            if (isFlagSet(Flag::LOGTYPES_PREFIX))
                 stream << p_logType;
-            }
 
-            //Log tag
-            if (isFlagSet(Flag::LOGTAGPREFIX)) {
+            if (isFlagSet(Flag::LOGTAG_PREFIX))
                 stream << p_logTag;
-            }
 
-            // Whitespace
-            if (isFlagSet(Flag::WHITESPACEPREFIX)) {
-                stream << '\t';
-            }
+            if (isFlagSet(Flag::WHITESPACE_PREFIX))
+                stream << "    ";
 
             return stream.str();
         }
 
-        static std::string printSuffix() {
+        static std::string formatSuffix() {
             std::ostringstream stream;
 
-            // Color
-            if (isFlagSet(Flag::LOGTYPECOLORS) && s_ostream == &std::cout) {
+            if (isFlagSet(Flag::LOGTYPE_COLORS) && s_ostream == &std::cout)
                 stream << "\033[0m";
-            }
 
-            // End of line
-            if (isFlagSet(Flag::ENDOFLINESUFFIX)) {
+            if (isFlagSet(Flag::END_OF_LINE_SUFFIX))
                 stream << std::endl;
-            }
 
             return stream.str();
         }
 
-        // Last argument + suffix
-        template<typename T>
-        static std::string print(const T p_arg) {
+        template<typename Type>
+        static std::string formatContent(const Type p_arg) {
             std::ostringstream stream;
             stream << p_arg;
-            stream << printSuffix();
+            stream << formatSuffix();
             return stream.str();
         }
 
-        // Recursive call (multiple arguments)
-        template<typename T, typename... Ts>
-        static std::string print(const T p_arg, const Ts... p_args) {
+        template<typename Type, typename... Types>
+        static std::string formatContent(const Type p_arg, const Types... p_args) {
             std::ostringstream stream;
-            stream << p_arg << print(p_args...);
+            stream << p_arg << formatContent(p_args...);
             return stream.str();
         }
 
-        static void log(LogType p_logType, LogTag p_logTag, std::string p_message) {
-            if (isFlagSet(Flag::LOGTYPEFILTER) && filter(p_logType)) { return;}
-            if (isFlagSet(Flag::LOGTAGFILTER) && filter(p_logTag)) { return; }
+        static void logMessage(LogType p_logType, LogTag p_logTag, std::string p_message) {
+            if (isFlagSet(Flag::LOGTYPE_FILTER) && filter(p_logType)) return;
+            if (isFlagSet(Flag::LOGTAG_FILTER) && filter(p_logTag)) return;
             *s_ostream << p_message;
         }
 
-        static bool filter(LogType p_logType) { // return true if should not be logged
-            if (isFlagSet(Flag::WHITELISTFILTER)) { return !s_logTypeFilter[(int)p_logType]; }
-            else { return s_logTypeFilter[(int)p_logType]; }
+        static bool filter(LogType p_logType) {
+            if (isFlagSet(Flag::WHITELIST_FILTER))
+                return !s_logTypeFilter[(int)p_logType];
+            else
+                return s_logTypeFilter[(int)p_logType];
         }
 
-        static bool filter(LogTag p_logTag) { // return true if should not be logged
-            if (isFlagSet(Flag::WHITELISTFILTER)) { return !s_logTagFilter[p_logTag.getId()]; }
-            else { return s_logTagFilter[p_logTag.getId()]; }
+        static bool filter(LogTag p_logTag) {
+            if (isFlagSet(Flag::WHITELIST_FILTER))
+                return !s_logTagFilter[p_logTag.getId()];
+            else
+                return s_logTagFilter[p_logTag.getId()];
         }
 
-        static std::string printLogTypeColor(LogType p_logType) {
+        static std::string formatLogTypeColor(LogType p_logType) {
             std::string colorCode;
             switch (p_logType) {
             case LogType::Trace:
@@ -218,39 +208,37 @@ namespace Logger {
 
     public:
 
-        // Prefix + single argument + suffix (logTag unspecified)
-        template<typename T>
-        static void print(const LogType p_logType, const T p_arg) {
+        template<typename Type>
+        static void log(const LogType p_logType, const Type p_arg) {
             std::ostringstream stream;
-            stream << printPrefix(p_logType, LogTag::getNoTag()) << p_arg << printSuffix();
-            log(p_logType, LogTag::getNoTag(), stream.str());
+            stream << formatPrefix(p_logType, LogTag::getNoTag()) << p_arg << formatSuffix();
+            logMessage(p_logType, LogTag::getNoTag(), stream.str());
         }
 
-        // Prefix + recursive call (multiple arguments) (logTag unspecified)
-        template<typename T, typename... Ts>
-        static void print(const LogType p_logType, const T p_arg, const Ts... p_args) {
+        template<typename Type, typename... Types>
+        static void log(const LogType p_logType, const Type p_arg, const Types... p_args) {
             std::ostringstream stream;
-            stream << printPrefix(p_logType, LogTag::getNoTag()) << p_arg << print(p_args...);
-            log(p_logType, LogTag::getNoTag(), stream.str());
-        }
-        // Prefix + single argument + suffix (logTag specified)
-        template<typename T>
-        static void print(const LogType p_logType, const LogTag p_logTag, const T p_arg) {
-            std::ostringstream stream;
-            stream << printPrefix(p_logType, p_logTag) << p_arg << printSuffix();
-            log(p_logType, p_logTag, stream.str());
+            stream << formatPrefix(p_logType, LogTag::getNoTag()) << p_arg << formatContent(p_args...);
+            logMessage(p_logType, LogTag::getNoTag(), stream.str());
         }
 
-        // Prefix + recursive call (multiple arguments) (logTag specified)
-        template<typename T, typename... Ts>
-        static void print(const LogType p_logType, const LogTag p_logTag, const T p_arg, const Ts... p_args) {
+        template<typename Type>
+        static void log(const LogType p_logType, const LogTag p_logTag, const Type p_arg) {
             std::ostringstream stream;
-            stream << printPrefix(p_logType, p_logTag) << p_arg << print(p_args...);
-            log(p_logType, p_logTag, stream.str());
+            stream << formatPrefix(p_logType, p_logTag) << p_arg << formatSuffix();
+            logMessage(p_logType, p_logTag, stream.str());
+        }
+
+        template<typename Type, typename... Types>
+        static void log(const LogType p_logType, const LogTag p_logTag, const Type p_arg, const Types... p_args) {
+            std::ostringstream stream;
+            stream << formatPrefix(p_logType, p_logTag) << p_arg << formatContent(p_args...);
+            logMessage(p_logType, p_logTag, stream.str());
         }
 
         static void setOutputStream(std::ostream* p_ostream) {
-            if (s_ostream != &std::cout && dynamic_cast<std::ofstream*>(s_ostream)) { static_cast<std::ofstream*>(s_ostream)->close(); }
+            if (s_ostream != &std::cout && dynamic_cast<std::ofstream*>(s_ostream))
+                static_cast<std::ofstream*>(s_ostream)->close();
             s_ostream = p_ostream;
         }
 

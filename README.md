@@ -1,32 +1,34 @@
 # Logger
 A lightweight logging library for C++
 
-## Version 1.0.1 - File extension and README update
+This library is part of a long term project that aims to build a small game engine and break it down into various smaller projects.
+This is the first library and may be revisited when additional features are needed.
+
+## Version 1.1.0 - Refactor and Cleanup
 - Major: Full release
-- Minor: Full release
-- Patch: File extension and README update
+- Minor: Refactor and Cleanup
+- Patch: Refactor and Cleanup
 
 ## Features
-- Six different log types with (Trace, Debug, Info, Warning, Error, Fatal)
-- Easy to use macros for convenience
-- Thread safe methods
-- Timestamps and log types prefixes for logged messages
-- Tags and flags for customizing the output
-- Highly customizable filtering for both log types and tags
-- Support for different output streams
 - Single file header only implementation
+- Easy to use macros
+- Thread safety
+- Timestamps
+- Tags and flags for versatility
+- Highly customizable filtering
+- Support for alternate output streams
 
 ## Requirements
 This library was built using modern C++ (C++17) features and was solely tested on a macos environment using Clang++ 16.0.0, meaning using different tools may not work as intended.
 
 ## Usage
 To get started with Logger, copy the `Logger.hpp` file from the repository and add it to your project.
-Include the header files to your cpp files and use any of the logging methods from the example bellow!
+Include the header files to your cpp files and use any of the macros from the example bellow!
 
 Example:
 ```C++
 //test.cpp
-#include "Logger.hpp"
+#include "logger.hpp"
 
 int main() {
 
@@ -54,12 +56,12 @@ int main() {
 That's it! It's as simple as that! Feel free to use this library in your personnal projects!
 
 If you wish to keep your logs in a file rather than outputing to the console, Logger supports alternate output streams.
-Simply use the `LOGGER_SETOUTPUTSTREAM()` macro.
+Simply use the `LOGGER_SET_OUTPUT_STREAM()` macro.
 
 Example:
 ```C++
 //test.cpp
-#include "Logger.hpp"
+#include "logger.hpp"
 
 #include <fstream>
 #include <string>
@@ -68,7 +70,7 @@ int main() {
 
     std::string filePath = "log.txt";
     std::ofstream ofstream(filePath);
-    LOGGER_SETOUTPUTSTREAM(&ofstream);
+    LOGGER_SET_OUTPUT_STREAM(&ofstream);
 
     LOGGER_DEBUG("Testing alternate output streams!");
 
@@ -77,36 +79,36 @@ int main() {
 ```
 
 For output preferences, Logger uses flags.
-Simply use the `LOGGER_SETFLAG()` and `LOGGER_CLEARFLAG()` macros.
+Simply use the `LOGGER_SET_FLAG()` and `LOGGER_CLEAR_FLAG()` macros.
 
 Example:
 ```C++
 // test.cpp
-#include "Logger.hpp"
+#include "logger.hpp"
 
 int main() {
 
     // Note: by default, most flags are set to true! (See flag defaults below)
     LOGGER_DEBUG("Testing different output flags!");
 
-    // Use LOGGER_CLEARFLAG() to set flags to false
+    // Use LOGGER_CLEAR_FLAG() to set flags to false
 
-    LOGGER_CLEARFLAG(Logger::Flag::TIMESTAMPSPREFIX);
+    LOGGER_CLEAR_FLAG(Logger::Flag::TIMESTAMPS_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    LOGGER_CLEARFLAG(Logger::Flag::WHITESPACEPREFIX);
+    LOGGER_CLEAR_FLAG(Logger::Flag::WHITESPACE_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    // Use LOGGER_SETFLAGS() to set them to true
+    // Use LOGGER_SET_FLAGS() to set them to true
 
-    LOGGER_SETFLAG(Logger::Flag::TIMESTAMPSPREFIX);
+    LOGGER_SET_FLAG(Logger::Flag::TIMESTAMPS_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    LOGGER_CLEARFLAG(Logger::Flag::LOGTYPESPREFIX);
+    LOGGER_CLEAR_FLAG(Logger::Flag::LOGTYPES_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
-    LOGGER_SETFLAG(Logger::Flag::WHITESPACEPREFIX);
-    LOGGER_SETFLAG(Logger::Flag::LOGTYPESPREFIX);
+    LOGGER_SET_FLAG(Logger::Flag::WHITESPACE_PREFIX);
+    LOGGER_SET_FLAG(Logger::Flag::LOGTYPES_PREFIX);
     LOGGER_DEBUG("Testing different output flags!");
 
     return 0;
@@ -119,12 +121,12 @@ Example:
 
 ```C++
 //test.cpp
-#include "Logger.hpp"
+#include "logger.hpp"
 
 int main() {
 
     // Set the log tag prefix flag
-    LOGGER_SETFLAG(Logger::Flag::LOGTAGPREFIX);
+    LOGGER_SET_FLAG(Logger::Flag::LOGTAG_PREFIX);
 
     Logger::LogTag testingTag("Testing"); // Create a log tag
     LOGGER_DEBUG(testingTag, "Testing tag specification!");
@@ -137,17 +139,22 @@ int main() {
 ```
 
 ### Additional information about flags (NAME, default value, behaviour)
-- `TIMESTAMPSPREFIX`,  `true`,  Toggles the display of the timestamp
-- `LOGTYPESPREFIX`,    `true`,  Toggles the display of the log type
-- `WHITESPACEPREFIX`,  `true`,  Toggles the display of whitespace between the prefix and the message
-- `LOGTAGPREFIX`,      `false`, Toggles the display of the log tag
-- `LOGTYPECOLORS`,     `true`,  Toggles the color of the message based on log type
-- `LOGTYPEFILTER`,     `false`, Toggles the filtering of the message based on log type
-- `LOGTAGFILTER`,      `false`, Toggles the filtering of the message based on log tag
-- `WHITELISTFILTER`,   `true`,  Toggles the use of whitelisting for filtering (filters act as blacklists if this flag is cleared)
-- `ENDOFLINESUFFIX`,   `true`,  Toggles the display of a end of line following the message
+- `TIMESTAMPS_PREFIX`,  `true`,  Toggles the display of the timestamp
+- `LOGTYPES_PREFIX`,    `true`,  Toggles the display of the log type
+- `WHITESPACE_PREFIX`,  `true`,  Toggles the display of whitespace between the prefix and the message
+- `LOGTAG_PREFIX`,      `false`, Toggles the display of the log tag
+- `LOGTYPE_COLORS`,     `true`,  Toggles the color of the message based on log type
+- `LOGTYPE_FILTER`,     `false`, Toggles the filtering of the message based on log type
+- `LOGTAG_FILTER`,      `false`, Toggles the filtering of the message based on log tag
+- `WHITELIST_FILTER`,   `true`,  Toggles the use of whitelisting for filtering (filters act as blacklists if this flag is cleared)
+- `END_OF_LINE_SUFFIX`,   `true`,  Toggles the display of a end of line following the message
 
 ## Changelog
+
+### Version 1.1.0 - Refactor and Cleanup
+- Changed naming conventions for consistency
+- Changed method naming for code clarity
+- Changed README to match updates
 
 ### Version 1.0.1 - File extension and README update
 - Added README section (Requirements)
